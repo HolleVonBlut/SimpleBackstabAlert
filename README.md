@@ -25,6 +25,7 @@ Descarga o crea la carpeta SimpleBackstabAlert dentro de tu directorio Interface
 
 Asegúrate de que la estructura sea la siguiente:
 
+
 Plaintext
 SimpleBackstabAlert/
 ├── SimpleBackstabAlert.toc
