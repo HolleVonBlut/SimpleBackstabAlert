@@ -13,7 +13,9 @@ local SONIDO_ALERTA = RUTA_BASE .. "alerta.wav"
 
 -- Variables de control interno
 local ultimoSonido = 0 -- Control para el anti-spam
-local INTERVALO_SONIDO = 1.0 -- Tiempo en segundos para el "respiro"
+local tiempoRojo = 0
+local INTERVALO_ALERTA = 0.7 -- Tiempo en segundos para el "respiro"
+
 
 -- Crear el Frame
 local frame = CreateFrame("Frame", "BackstabCheckFrame", UIParent)
@@ -53,17 +55,18 @@ frame:SetScript("OnEvent", function()
         texture:SetTexture(TEXTURAS.amarillo)
 
     -- Detección del Error -> ROJO + SONIDO (Ajustado para detectar Shred/Backstab/etc)
-    elseif event == "UI_ERROR_MESSAGE" then
-        -- arg1 contiene el mensaje de error. Buscamos la frase clave dentro del texto.
+   elseif event == "UI_ERROR_MESSAGE" then
         if arg1 and (string.find(arg1, "must be behind your target") or 
            string.find(arg1, "Debes estar detrás del objetivo")) then
             
+            -- Activar estado rojo y cargar tiempo
             texture:SetTexture(TEXTURAS.rojo)
+            tiempoRojo = INTERVALO_ALERTA 
             
-            -- Lógica Anti-Spam para el Sonido (1 segundo)
+            -- Lógica Anti-Spam Sonora (0.7s)
             if SimpleBackstabDB.soundOn then
                 local tiempoActual = GetTime()
-                if (tiempoActual - ultimoSonido) >= INTERVALO_SONIDO then
+                if (tiempoActual - ultimoSonido) >= INTERVALO_ALERTA then
                     PlaySoundFile(SONIDO_ALERTA)
                     ultimoSonido = tiempoActual
                 end
@@ -77,6 +80,27 @@ frame:SetScript("OnEvent", function()
         end
     end
 end)
+
+
+-- NUEVO: Lógica de actualización constante (Temporizador)
+frame:SetScript("OnUpdate", function()
+    -- Solo restamos tiempo si el icono está en modo "error" (tiempoRojo > 0)
+    if tiempoRojo > 0 then
+        tiempoRojo = tiempoRojo - arg1 -- arg1 en OnUpdate es el tiempo pasado desde el último frame
+        
+        -- Cuando el tiempo se agota, volvemos a Amarillo (si seguimos en combate)
+        if tiempoRojo <= 0 then
+            if UnitAffectingCombat("player") then
+                texture:SetTexture(TEXTURAS.amarillo)
+            else
+                texture:SetTexture(TEXTURAS.verde)
+            end
+        end
+    end
+end)
+
+
+
 
 -- Lógica de Arrastre
 frame:SetScript("OnDragStart", function() this:StartMoving() end)
