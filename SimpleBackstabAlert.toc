@@ -2,7 +2,8 @@
 ## Title: Simple Backstab Alert
 ## Notes: Alerta visual y sonora de posicionamiento para Pícaros.
 ## Author: Holle
-## Version: 1.1
+## Version: 1.2
 ## SavedVariables: SimpleBackstabDB
+
 
 SimpleBackstabAlert.lua
