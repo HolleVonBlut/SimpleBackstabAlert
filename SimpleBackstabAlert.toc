@@ -1,9 +1,10 @@
 ## Interface: 11200
 ## Title: Simple Backstab Alert
-## Notes: Alerta visual y sonora de posicionamiento para Pícaros.
+## Notes: Alerta visual y sonora de posicionamiento para Pícaros/Druidas Ferales.
 ## Author: Holle
 ## Version: 1.2
 ## SavedVariables: SimpleBackstabDB
 
 
 SimpleBackstabAlert.lua
+
